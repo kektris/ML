@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mashonka Linux</title>
+    <!-- Favicon для всех устройств -->
+    <link rel="icon" href="icon/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon/logo.png">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --white-transparent: rgba(255, 255, 255, 0.85);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--primary-gradient);
+            color: #333;
+            min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Логотип для мобильных */
+        .logo {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: block;
+            top: 0;
+            left: 0;
+        }
+
+        .title-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .title-box {
+            background-color: var(--white-transparent);
+            border-radius: 25px;
+            padding: 15px 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+            text-align: center;
+        }
+
+        .description {
+            display: none;
+            font-size: 1rem;
+            line-height: 1.5;
+            padding: 10px 0;
+        }
+
+        .feature-tiles {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tile {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .tile {
+                flex-direction: row;
+                height: 245px;
+            }
+        }
+
+        .tile:hover {
+            transform: translateY(-3px);
+        }
+
+        .media-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .media-container {
+                width: 50%;
+                height: auto;
+            }
+        }
+
+        .media-container img,
+        .media-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content {
+            width: 100%;
+            padding: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .content {
+                width: 50%;
+                padding: 20px;
+            }
+        }
+
+        .tile-title {
+            font-size: 1.4rem;
+            margin: 0 0 10px 0;
+            color: #444;
+        }
+
+        .tile-description {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        @media (min-width: 480px) {
+            .download-btn {
+                width: auto;
+            }
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Анимации */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #333 }
+        }
+
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #333;
+            animation: 
+                typing 2.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: var(--primary-gradient);
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-map {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background-color: white;
+            color: #764ba2;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        /* Оптимизация позиционирования медиа для мобильных */
+        .tile:nth-child(1) .media-container img {
+            object-position: center 57%;
+        }
+        
+        .tile:nth-child(2) .media-container video {
+            object-position: center 30%;
+        }
+        
+        .tile:nth-child(3) .media-container video {
+            object-position: center 59%;
+        }
+        
+        .tile:nth-child(4) .media-container video {
+            object-position: center 35%;
+        }
+
+        .tile:nth-child(5) .media-container video {
+            object-position: center 30%;
+        }
+
+        /* Улучшение для touch-устройств */
+        button, .download-btn, .title-box {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Оптимизация видео для мобильных */
+        video {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Логотип - изменено позиционирование для мобильных -->
+        <img src="icon/logo.png" alt="Mashonka Linux Logo" class="logo">
+        
+        <div class="title-container">
+            <div class="title-box overlay-effect" id="titleBox">
+                <h1 class="title typing-effect" id="mainTitle">Mashonka Linux</h1>
+                <p class="description" id="mainDescription">
+                    Этот дистрибутив предназначен для программирования, гейминга и учебы. Mashonka Linux - это современная операционная система на базе Linux, созданная для удобства и продуктивности. Она сочетает в себе мощь открытого ПО с инновационными функциями, включая встроенных ИИ-ассистентов для различных задач. Легковесная, но функциональная, эта система подойдет как новичкам, так и опытным пользователям.
+                </p>
+            </div>
+        </div>
+
+        <div class="feature-tiles">
+            <!-- Все плитки остаются без изменений в HTML -->
+            <!-- Плитка 1: Программирование -->
+            <div class="tile">
+                <div class="media-container">
+                    <img src="image/image_0.jpg" alt="Программирование">
+                </div>
+                <div class="content">
+                    <h2 class="tile-title">Программирование</h2>
+                    <p class="tile-description">
+                        Mashonka Linux включает все необходимое для разработки: от редакторов кода до полных IDE. Особенность - ИИ-ассистент Мега, который помогает писать код, находить ошибки и предлагать оптимизации. Поддерживает все популярные языки программирования и фреймворки. Встроенные инструменты для работы с Git, Docker и облачными сервисами ускорят ваш workflow.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Плитка 2: Учеба -->
+            <div class="tile">
+                <div class="media-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="video/video_0.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="content">
+                    <h2 class="tile-title">Учеба</h2>
+                    <p class="tile-description">
+                        ИИ-ассистент Стади - ваш персональный помощник в обучении. Он помогает с домашними заданиями, объясняет сложные темы и даже проверяет ваши работы. В комплекте: программы для создания презентаций, написания рефератов и управления временем. Специальные режимы уменьшают отвлекающие факторы и помогают сосредоточиться на учебе.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Плитка 3: Гейминг -->
+            <div class="tile">
+                <div class="media-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="video/video_1.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="content">
+                    <h2 class="tile-title">Гейминг</h2>
+                    <p class="tile-description">
+                        Полноценная игровая платформа с поддержкой Steam, Proton и всех популярных игровых сервисов. ИИ-ассистент Гейми подскажет как пройти сложную миссию, расскажет о характеристиках персонажа или оружия, и даже предложит оптимальную стратегию. Автоматическая синхронизация вашей библиотеки игр из Steam и других платформ. Запуск игр в один клик!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Плитка 4: Удобство использования -->
+            <div class="tile">
+                <div class="media-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="video/video_2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="content">
+                    <h2 class="tile-title">Интуитивный интерфейс</h2>
+                    <p class="tile-description">
+                        Mashonka Linux создан с заботой о пользователе. Адаптивный интерфейс подстраивается под ваши привычки. Быстрый поиск по системе, умные уведомления и жесты управления упрощают повседневные задачи. Встроенные темы оформления и мощные, но простые настройки позволяют персонализировать систему за несколько минут. Работает быстро даже на старых компьютерах.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Плитка 5: Скачивание -->
+            <div class="tile">
+                <div class="media-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="video/video_3.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="content">
+                    <h2 class="tile-title">Надеюсь вам понравился Mashonka Linux и вы будете использовать именно его</h2>
+                    <button class="download-btn" id="downloadBtn">Скачать сейчас</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="downloadModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Добро пожаловать в Машонку!</h2>
+            <img src="image/image_1.jpg" alt="Mashonka Linux" class="modal-image">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9594.96125478934!2d32.139004477974105!3d54.12561374128411!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46ce07ad40cdc93d%3A0xb3a67570e999ad39!2z0JzQsNGI0L7QvdC60LAsINCh0LzQvtC70LXQvdGB0LrQsNGPINC-0LHQuy4sIDIxNjYyMA!5e0!3m2!1sru!2sru!4v1751242090460!5m2!1sru!2sru" 
+                    class="modal-map" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            <button class="close-btn" id="closeModal">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleBox = document.getElementById('titleBox');
+            const mainTitle = document.getElementById('mainTitle');
+            const mainDescription = document.getElementById('mainDescription');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadModal = document.getElementById('downloadModal');
+            const closeModal = document.getElementById('closeModal');
+
+            // Анимация заголовка
+            setTimeout(() => {
+                mainTitle.classList.remove('typing-effect');
+                mainTitle.style.borderRight = 'none';
+            }, 2500);
+
+            // Клик по заголовку
+            titleBox.addEventListener('click', function() {
+                if (mainDescription.style.display === 'block') {
+                    mainDescription.style.display = 'none';
+                    mainTitle.style.display = 'block';
+                } else {
+                    mainDescription.style.display = 'block';
+                    mainTitle.style.display = 'none';
+                }
+            });
+
+            // Открытие модального окна
+            downloadBtn.addEventListener('click', function() {
+                downloadModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // Блокировка скролла
+            });
+
+            // Закрытие модального окна
+            closeModal.addEventListener('click', function() {
+                downloadModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Восстановление скролла
+            });
+
+            // Закрытие при клике вне модального окна
+            downloadModal.addEventListener('click', function(e) {
+                if (e.target === downloadModal) {
+                    downloadModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Оптимизация видео для мобильных
+            document.querySelectorAll('video').forEach(video => {
+                video.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                });
+                video.setAttribute('playsinline', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('loop', '');
+            });
+
+            // Оптимизация для touch-устройств
+            document.addEventListener('touchstart', function(){}, {passive: true});
+        });
+    </script>
+</body>
+</html>
